@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DSS Pemilihan Teknologi Pengering Hasil Panen Tenaga Surya</title>
+<style>
+  :root {
+    --primary: #2E7D32;
+    --primary-light: #4CAF50;
+    --primary-dark: #1B5E20;
+    --accent: #FF8F00;
+    --accent-light: #FFC107;
+    --bg: #F1F8E9;
+    --card: #ffffff;
+    --text: #1a1a1a;
+    --text-muted: #555;
+    --border: #C8E6C9;
+    --shadow: 0 2px 12px rgba(46,125,50,0.1);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 60%, var(--primary-light) 100%);
+    color: white;
+    padding: 0;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  }
+  .header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px 24px 20px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+  .header-icon {
+    font-size: 52px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+  }
+  .header-text h1 {
+    font-size: 1.45rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    line-height: 1.3;
+  }
+  .header-text p {
+    font-size: 0.85rem;
+    opacity: 0.85;
+    margin-top: 4px;
+  }
+  .header-badge {
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.35);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 0.78rem;
+    margin-top: 8px;
+    display: inline-block;
+  }
+
+  /* NAV TABS */
+  nav {
+    background: var(--primary-dark);
+    display: flex;
+    gap: 0;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+  nav button {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.7);
+    padding: 13px 22px;
+    cursor: pointer;
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    white-space: nowrap;
+    border-bottom: 3px solid transparent;
+  }
+  nav button:hover { color: white; background: rgba(255,255,255,0.08); }
+  nav button.active {
+    color: var(--accent-light);
+    border-bottom-color: var(--accent-light);
+    background: rgba(255,255,255,0.05);
+  }
+
+  /* MAIN */
+  main { max-width: 1100px; margin: 0 auto; padding: 28px 18px 60px; }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    margin-bottom: 22px;
+  }
+  .card h2 {
+    color: var(--primary-dark);
+    font-size: 1.1rem;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card h2 .emoji { font-size: 1.3rem; }
+
+  /* INFO GRID */
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 22px;
+  }
+  .info-card {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    color: white;
+    border-radius: 10px;
+    padding: 18px;
+    text-align: center;
+  }
+  .info-card .val { font-size: 2rem; font-weight: 700; }
+  .info-card .lbl { font-size: 0.8rem; opacity: 0.9; margin-top: 4px; }
+
+  /* TABLES */
+  .tbl-wrap { overflow-x: auto; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+  th {
+    background: var(--primary);
+    color: white;
+    padding: 11px 14px;
+    text-align: center;
+    font-weight: 600;
+  }
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #e8f5e9;
+    text-align: center;
+    vertical-align: middle;
+  }
+  tr:nth-child(even) td { background: #f9fbe7; }
+  tr:hover td { background: #e8f5e9; }
+
+  /* WEIGHT SLIDERS */
+  .weight-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f4e8;
+  }
+  .weight-row:last-child { border-bottom: none; }
+  .weight-label { flex: 0 0 200px; font-size: 0.9rem; color: var(--text-muted); }
+  .weight-label strong { display: block; color: var(--text); }
+  input[type=range] {
+    flex: 1;
+    accent-color: var(--primary);
+    height: 6px;
+    cursor: pointer;
+  }
+  .weight-val {
+    flex: 0 0 52px;
+    text-align: right;
+    font-weight: 700;
+    color: var(--primary);
+    font-size: 1rem;
+  }
+  .total-weight {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-top: 14px;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+  .total-weight.ok { background: #E8F5E9; color: var(--primary-dark); }
+  .total-weight.bad { background: #FFEBEE; color: #c62828; }
+
+  /* BTN */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 26px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(46,125,50,0.25);
+  }
+  .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(46,125,50,0.35); }
+  .btn:active { transform: translateY(0); }
+  .btn-accent {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+    box-shadow: 0 2px 8px rgba(255,143,0,0.3);
+  }
+
+  /* RESULT CARDS */
+  .rank-grid { display: flex; flex-direction: column; gap: 14px; }
+  .rank-card {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    background: white;
+    border-radius: 12px;
+    padding: 18px 22px;
+    box-shadow: var(--shadow);
+    border: 2px solid transparent;
+    transition: all 0.3s;
+  }
+  .rank-card.rank-1 { border-color: #FFD700; background: linear-gradient(135deg, #FFFDE7 0%, #FFF9C4 100%); }
+  .rank-card.rank-2 { border-color: #B0BEC5; background: linear-gradient(135deg, #FAFAFA 0%, #ECEFF1 100%); }
+  .rank-card.rank-3 { border-color: #BCAAA4; background: linear-gradient(135deg, #FBE9E7 0%, #F5F5F5 100%); }
+
+  .rank-badge {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+  .rank-1 .rank-badge { background: #FFD700; color: #5D4037; }
+  .rank-2 .rank-badge { background: #B0BEC5; color: #263238; }
+  .rank-3 .rank-badge { background: #BCAAA4; color: #3E2723; }
+  .rank-4 .rank-badge, .rank-5 .rank-badge { background: #E0E0E0; color: #424242; }
+
+  .rank-info { flex: 1; }
+  .rank-info .name { font-size: 1rem; font-weight: 700; color: var(--text); }
+  .rank-info .desc { font-size: 0.82rem; color: var(--text-muted); margin-top: 3px; }
+  .rank-score {
+    text-align: right;
+  }
+  .rank-score .score { font-size: 1.5rem; font-weight: 800; color: var(--primary); }
+  .rank-score .label { font-size: 0.75rem; color: var(--text-muted); }
+
+  .bar-wrap { flex: 1; height: 8px; background: #e0e0e0; border-radius: 4px; margin-top: 8px; }
+  .bar-fill { height: 8px; border-radius: 4px; background: linear-gradient(90deg, var(--primary), var(--primary-light)); }
+  .rank-1 .bar-fill { background: linear-gradient(90deg, #f9a825, #FFD700); }
+
+  /* METHOD BOX */
+  .step-box {
+    background: #f1f8e9;
+    border-left: 4px solid var(--primary);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin: 12px 0;
+    font-size: 0.88rem;
+    line-height: 1.7;
+  }
+  .step-box strong { color: var(--primary-dark); }
+
+  /* FORMULA */
+  .formula {
+    background: #263238;
+    color: #80CBC4;
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.88rem;
+    margin: 12px 0;
+    overflow-x: auto;
+  }
+
+  /* MATRIX TABLE */
+  .matrix-table th { font-size: 0.8rem; padding: 9px 10px; }
+  .matrix-table td { font-size: 0.82rem; padding: 9px 10px; }
+  .highlight-cell { color: var(--primary-dark); font-weight: 700; background: #e8f5e9 !important; }
+
+  /* BEST BANNER */
+  .best-banner {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+    color: white;
+    border-radius: 12px;
+    padding: 22px 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 22px;
+  }
+  .best-banner .icon { font-size: 2.5rem; }
+  .best-banner h3 { font-size: 1.1rem; margin-bottom: 4px; }
+  .best-banner p { font-size: 0.88rem; opacity: 0.9; }
+
+  /* RESPONSIVE */
+  @media(max-width:600px) {
+    .header-inner { flex-direction: column; text-align: center; }
+    .weight-label { flex: 0 0 130px; }
+    nav button { padding: 12px 14px; font-size: 0.8rem; }
+    .rank-card { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="header-icon">☀️</div>
+    <div class="header-text">
+      <h1>DSS Pemilihan Teknologi Pengering Hasil Panen Tenaga Surya</h1>
+      <p>Komoditas: <strong>Stroberi</strong> &nbsp;|&nbsp; Metode: <strong>TOPSIS</strong> &nbsp;|&nbsp; Kelompok 7</p>
+      <span class="header-badge">Decision Support System — Mata Kuliah DSS</span>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <button class="active" onclick="showTab('beranda')">🏠 Beranda</button>
+  <button onclick="showTab('alternatif')">🔧 Alternatif</button>
+  <button onclick="showTab('kriteria')">📋 Kriteria & Bobot</button>
+  <button onclick="showTab('perhitungan')">🧮 Perhitungan</button>
+  <button onclick="showTab('hasil')">🏆 Hasil Perangkingan</button>
+</nav>
+
+<main>
+
+<!-- ============ BERANDA ============ -->
+<div id="beranda" class="section active">
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="val">4</div>
+      <div class="lbl">Alternatif Teknologi</div>
+    </div>
+    <div class="info-card">
+      <div class="val">5</div>
+      <div class="lbl">Kriteria Penilaian</div>
+    </div>
+    <div class="info-card">
+      <div class="val">TOPSIS</div>
+      <div class="lbl">Metode DSS</div>
+    </div>
+    <div class="info-card">
+      <div class="val">Stroberi</div>
+      <div class="lbl">Komoditas Target</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="emoji">📖</span> Latar Belakang</h2>
+    <p style="line-height:1.75;color:var(--text-muted)">
+      Stroberi (<em>Fragaria × ananassa</em>) merupakan buah dengan kadar air tinggi (~90%) yang sangat rentan terhadap kerusakan pasca panen. Teknologi pengeringan berbasis tenaga surya menawarkan solusi hemat energi dan ramah lingkungan untuk memperpanjang masa simpan stroberi menjadi produk olahan (keripik, teh, selai kering) bernilai ekonomi tinggi.
+    </p>
+    <br>
+    <p style="line-height:1.75;color:var(--text-muted)">
+      Pemilihan teknologi pengering yang tepat memerlukan pertimbangan multi-kriteria mencakup kapasitas produksi, efisiensi energi, biaya investasi, waktu pengeringan, dan kemudahan operasional. Sistem Pendukung Keputusan (DSS) ini dirancang menggunakan metode <strong>TOPSIS</strong> (Technique for Order of Preference by Similarity to Ideal Solution) untuk membantu petani dan pelaku usaha stroberi memilih teknologi pengering paling optimal.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2><span class="emoji">❓</span> Rumusan Masalah</h2>
+    <ul style="padding-left:20px;line-height:2;color:var(--text-muted)">
+      <li>Teknologi pengering surya apa yang paling sesuai untuk komoditas stroberi?</li>
+      <li>Bagaimana mengevaluasi teknologi berdasarkan multi-kriteria secara objektif?</li>
+      <li>Metode DSS apa yang efektif untuk perangkingan teknologi pengering?</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2><span class="emoji">🎯</span> Tujuan Sistem</h2>
+    <ul style="padding-left:20px;line-height:2;color:var(--text-muted)">
+      <li>Memberikan rekomendasi teknologi pengering surya terbaik untuk stroberi</li>
+      <li>Menerapkan metode TOPSIS dalam evaluasi multi-kriteria</li>
+      <li>Mempermudah pengambilan keputusan berbasis data kuantitatif</li>
+      <li>Meningkatkan nilai tambah produk stroberi pasca panen</li>
+    </ul>
+  </div>
+
+  <div style="text-align:center;margin-top:10px">
+    <button class="btn" onclick="showTab('alternatif')">Mulai Analisis →</button>
+  </div>
+</div>
+
+<!-- ============ ALTERNATIF ============ -->
+<div id="alternatif" class="section">
+  <div class="card">
+    <h2><span class="emoji">🔧</span> Data Alternatif Teknologi Pengering</h2>
+    <p style="color:var(--text-muted);margin-bottom:16px;font-size:0.88rem">
+      Empat jenis teknologi pengering tenaga surya yang dievaluasi untuk pengeringan stroberi:
+    </p>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Kode</th>
+            <th>Nama Teknologi</th>
+            <th>Kapasitas (kg/batch)</th>
+            <th>Waktu Kering (jam)</th>
+            <th>Konsumsi Energi (kWh)</th>
+            <th>Biaya Investasi (Rp juta)</th>
+            <th>Efisiensi (%)</th>
+          </tr>
+        </thead>
+        <tbody id="altTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="emoji">📊</span> Deskripsi Alternatif</h2>
+    <div id="altDesc"></div>
+  </div>
+</div>
+
+<!-- ============ KRITERIA ============ -->
+<div id="kriteria" class="section">
+  <div class="card">
+    <h2><span class="emoji">📋</span> Kriteria Penilaian</h2>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>Kode</th><th>Kriteria</th><th>Satuan</th><th>Tipe</th><th>Keterangan</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>C1</td><td>Kapasitas Pengeringan</td><td>kg/batch</td><td style="color:var(--primary);font-weight:600">Benefit ↑</td><td>Semakin besar semakin baik</td></tr>
+          <tr><td>C2</td><td>Waktu Pengeringan</td><td>jam</td><td style="color:#c62828;font-weight:600">Cost ↓</td><td>Semakin cepat semakin baik</td></tr>
+          <tr><td>C3</td><td>Konsumsi Energi</td><td>kWh</td><td style="color:#c62828;font-weight:600">Cost ↓</td><td>Semakin hemat semakin baik</td></tr>
+          <tr><td>C4</td><td>Biaya Investasi</td><td>Rp juta</td><td style="color:#c62828;font-weight:600">Cost ↓</td><td>Semakin murah semakin baik</td></tr>
+          <tr><td>C5</td><td>Efisiensi Pengeringan</td><td>%</td><td style="color:var(--primary);font-weight:600">Benefit ↑</td><td>Semakin tinggi semakin baik</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="emoji">⚖️</span> Pengaturan Bobot Kriteria</h2>
+    <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:16px">
+      Sesuaikan bobot setiap kriteria. Total bobot harus = 1.00 (100%).
+    </p>
+    <div id="weightSliders"></div>
+    <div id="liveNotif" style="
+  position:fixed;bottom:28px;right:24px;
+  background:#1B5E20;color:white;
+  padding:10px 20px;border-radius:8px;font-size:0.88rem;font-weight:600;
+  opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:999;
+  box-shadow:0 4px 16px rgba(0,0,0,0.25);">
+  ✓ Perhitungan diperbarui!
+</div>
+<div class="total-weight ok" id="totalWeightBox">
+      <span>Total Bobot</span>
+      <span id="totalWeightVal">1.00 ✓</span>
+    </div>
+    <br>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn" onclick="resetWeights()">↺ Reset Default</button>
+      <button class="btn btn-accent" onclick="showTab('perhitungan')">Hitung TOPSIS →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ PERHITUNGAN ============ -->
+<div id="perhitungan" class="section">
+  <div class="card">
+    <h2><span class="emoji">🧮</span> Metode TOPSIS</h2>
+    <div class="step-box">
+      <strong>TOPSIS</strong> (Technique for Order of Preference by Similarity to Ideal Solution) adalah metode DSS multi-kriteria yang merangking alternatif berdasarkan kedekatan dengan solusi ideal positif dan kejauhan dari solusi ideal negatif.
+    </div>
+    <div class="formula">
+Langkah TOPSIS:
+1. Normalisasi matriks keputusan: rij = xij / √(Σxij²)
+2. Bobot matriks ternormalisasi: vij = wj × rij  
+3. Tentukan solusi ideal: A+ (max benefit, min cost) dan A- (min benefit, max cost)
+4. Hitung jarak: D+i = √Σ(vij - A+j)²  dan  D-i = √Σ(vij - A-j)²
+5. Hitung preferensi: Ci = D-i / (D+i + D-i)  →  nilai 0–1, lebih tinggi lebih baik
+    </div>
+  </div>
+
+  <div id="bobotAktifBanner" style="
+    background:#E8F5E9;border:1px solid #A5D6A7;border-radius:10px;
+    padding:12px 18px;margin-bottom:18px;font-size:0.88rem;color:#1B5E20;
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+    <span style="font-weight:700">⚖️ Bobot aktif:</span>
+    <span id="bobotDisplay"></span>
+    <span style="margin-left:auto;color:#555;font-size:0.8rem">
+      → Ubah di tab <strong>Kriteria &amp; Bobot</strong>, tabel langsung berubah
+    </span>
+  </div>
+  <div id="calcSteps"></div>
+
+  <div style="text-align:center;margin-top:6px">
+    <button class="btn btn-accent" onclick="runTopsis();showTab('hasil')">Lihat Hasil Perangkingan 🏆</button>
+  </div>
+</div>
+
+<!-- ============ HASIL ============ -->
+<div id="hasil" class="section">
+  <div id="bestBanner"></div>
+  <div class="card">
+    <h2><span class="emoji">🏆</span> Perangkingan Akhir TOPSIS</h2>
+    <div class="rank-grid" id="rankGrid"></div>
+  </div>
+  <div class="card">
+    <h2><span class="emoji">📊</span> Tabel Skor TOPSIS</h2>
+    <div class="tbl-wrap">
+      <table id="scoreTable">
+        <thead>
+          <tr><th>Rank</th><th>Teknologi</th><th>D+ (Ideal+)</th><th>D- (Ideal-)</th><th>Skor (Ci)</th><th>Rekomendasi</th></tr>
+        </thead>
+        <tbody id="scoreBody"></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card">
+    <h2><span class="emoji">📝</span> Kesimpulan & Rekomendasi</h2>
+    <div id="conclusion"></div>
+  </div>
+</div>
+
+</main>
+
+<script>
+// ===================== DATA =====================
+const alternatives = [
+  { code: "A1", name: "Pengering Surya Tipe Rak (Cabinet Dryer)", short: "Cabinet Dryer",
+    emoji: "🗄️",
+    desc: "Pengering berbentuk kabinet dengan rak-rak susun, kolektor surya terintegrasi. Cocok untuk skala kecil-menengah, mudah dibuat dari bahan lokal.",
+    vals: [50, 10, 2.0, 8, 68] },
+  { code: "A2", name: "Pengering Surya Tipe Terowongan (Tunnel Dryer)", short: "Tunnel Dryer",
+    emoji: "🚇",
+    desc: "Desain terowongan dengan sirkulasi udara alami/paksa. Kapasitas lebih besar dan distribusi panas merata, ideal untuk produksi skala menengah.",
+    vals: [120, 8, 1.5, 18, 75] },
+  { code: "A3", name: "Pengering Hybrid Surya-Listrik", short: "Hybrid Surya-Listrik",
+    emoji: "⚡",
+    desc: "Kombinasi panel surya dan elemen pemanas listrik sebagai backup. Dapat beroperasi di cuaca mendung, konsistensi pengeringan tinggi.",
+    vals: [200, 6, 5.0, 35, 88] },
+  { code: "A4", name: "Pengering Surya Batch Sederhana", short: "Batch Sederhana",
+    emoji: "📦",
+    desc: "Rancangan sederhana berbasis greenhouse kecil dengan tanpa blower. Biaya investasi sangat rendah, cocok untuk petani kecil.",
+    vals: [30, 14, 0.5, 4, 52] },
+];
+
+const criteria = [
+  { code: "C1", name: "Kapasitas Pengeringan", unit: "kg/batch", type: "benefit" },
+  { code: "C2", name: "Waktu Pengeringan",     unit: "jam",     type: "cost" },
+  { code: "C3", name: "Konsumsi Energi",        unit: "kWh",     type: "cost" },
+  { code: "C4", name: "Biaya Investasi",         unit: "Rp juta", type: "cost" },
+  { code: "C5", name: "Efisiensi Pengeringan",   unit: "%",       type: "benefit" },
+];
+
+let weights = [0.25, 0.20, 0.20, 0.15, 0.20];
+
+// ===================== INIT =====================
+function init() {
+  buildAltTable();
+  buildAltDesc();
+  buildWeightSliders();
+  runTopsis();
+}
+
+function showTab(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const tabs = ['beranda','alternatif','kriteria','perhitungan','hasil'];
+  const idx = tabs.indexOf(id);
+  document.querySelectorAll('nav button')[idx].classList.add('active');
+  if (id === 'perhitungan' || id === 'hasil') runTopsis();
+}
+
+// ===================== ALT TABLE =====================
+function buildAltTable() {
+  const tb = document.getElementById('altTable');
+  tb.innerHTML = alternatives.map(a => `
+    <tr>
+      <td><strong>${a.code}</strong></td>
+      <td style="text-align:left">${a.emoji} ${a.name}</td>
+      ${a.vals.map(v => `<td>${v}</td>`).join('')}
+    </tr>
+  `).join('');
+}
+
+function buildAltDesc() {
+  const d = document.getElementById('altDesc');
+  d.innerHTML = alternatives.map(a => `
+    <div style="padding:14px 0;border-bottom:1px solid #f0f4e8;display:flex;gap:14px;align-items:flex-start">
+      <div style="font-size:2rem;flex-shrink:0">${a.emoji}</div>
+      <div>
+        <strong style="color:var(--primary-dark)">${a.code} — ${a.name}</strong>
+        <p style="color:var(--text-muted);font-size:0.88rem;margin-top:4px;line-height:1.6">${a.desc}</p>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ===================== WEIGHTS =====================
+function buildWeightSliders() {
+  const c = document.getElementById('weightSliders');
+  c.innerHTML = criteria.map((cr, i) => `
+    <div class="weight-row">
+      <div class="weight-label"><strong>${cr.code}</strong>${cr.name}</div>
+      <input type="range" min="5" max="50" value="${Math.round(weights[i]*100)}" 
+             step="1" oninput="updateWeight(${i}, this.value)">
+      <div class="weight-val" id="wv${i}">${weights[i].toFixed(2)}</div>
+    </div>
+  `).join('');
+  updateTotalWeight();
+}
+
+function updateWeight(i, v) {
+  weights[i] = parseFloat(v) / 100;
+  document.getElementById('wv'+i).textContent = weights[i].toFixed(2);
+  updateTotalWeight();
+  // Hitung ulang otomatis setiap bobot berubah
+  runTopsis();
+  showLiveNotif();
+}
+
+function showLiveNotif() {
+  const notif = document.getElementById('liveNotif');
+  if (!notif) return;
+  notif.style.opacity = '1';
+  clearTimeout(window._notifTimer);
+  window._notifTimer = setTimeout(() => { notif.style.opacity = '0'; }, 1800);
+}
+
+function updateTotalWeight() {
+  const total = weights.reduce((a,b)=>a+b,0);
+  const box = document.getElementById('totalWeightBox');
+  const val = document.getElementById('totalWeightVal');
+  const rounded = Math.round(total*100)/100;
+  val.textContent = rounded.toFixed(2) + (Math.abs(rounded-1) < 0.01 ? ' ✓' : ' ✗');
+  box.className = 'total-weight ' + (Math.abs(rounded-1) < 0.01 ? 'ok' : 'bad');
+}
+
+function resetWeights() {
+  weights = [0.25, 0.20, 0.20, 0.15, 0.20];
+  buildWeightSliders();
+}
+
+// ===================== TOPSIS =====================
+function runTopsis() {
+  const n = alternatives.length;
+  const m = criteria.length;
+  const X = alternatives.map(a => a.vals);
+
+  // Step 1: Normalize
+  const denom = criteria.map((_, j) => Math.sqrt(X.reduce((s, row) => s + row[j]**2, 0)));
+  const R = X.map(row => row.map((v, j) => v / denom[j]));
+
+  // Step 2: Weighted normalize
+  const V = R.map(row => row.map((v, j) => v * weights[j]));
+
+  // Step 3: Ideal solutions
+  const Apos = criteria.map((c, j) => c.type === 'benefit'
+    ? Math.max(...V.map(r => r[j])) : Math.min(...V.map(r => r[j])));
+  const Aneg = criteria.map((c, j) => c.type === 'benefit'
+    ? Math.min(...V.map(r => r[j])) : Math.max(...V.map(r => r[j])));
+
+  // Step 4: Distances
+  const Dpos = V.map(row => Math.sqrt(row.reduce((s,v,j) => s+(v-Apos[j])**2, 0)));
+  const Dneg = V.map(row => Math.sqrt(row.reduce((s,v,j) => s+(v-Aneg[j])**2, 0)));
+
+  // Step 5: Score
+  const C = Dpos.map((d, i) => Dneg[i] / (d + Dneg[i]));
+
+  // Rank
+  const ranked = alternatives.map((a, i) => ({...a, dp: Dpos[i], dn: Dneg[i], ci: C[i], origIdx: i}))
+    .sort((a,b) => b.ci - a.ci)
+    .map((a, ri) => ({...a, rank: ri+1}));
+
+  buildCalcSteps(R, V, Apos, Aneg, Dpos, Dneg, C);
+  buildResults(ranked);
+}
+
+function buildCalcSteps(R, V, Apos, Aneg, Dpos, Dneg, C) {
+  // Update bobot aktif banner
+  const bd = document.getElementById('bobotDisplay');
+  if (bd) bd.innerHTML = criteria.map((c,i)=>
+    `<span style="background:white;border:1px solid #C8E6C9;border-radius:5px;padding:2px 9px;margin:2px">
+      ${c.code} = <strong>${weights[i].toFixed(2)}</strong>
+    </span>`).join('');
+  const container = document.getElementById('calcSteps');
+  const fmt = v => v.toFixed(4);
+
+  const matrixHTML = (data, label, highlightRow = -1) => `
+    <div class="tbl-wrap" style="margin:10px 0">
+      <table class="matrix-table">
+        <thead><tr><th>Alt</th>${criteria.map(c=>`<th>${c.code}</th>`).join('')}</tr></thead>
+        <tbody>${alternatives.map((a,i) => `
+          <tr>
+            <td><strong>${a.code}</strong></td>
+            ${data[i].map(v => `<td>${fmt(v)}</td>`).join('')}
+          </tr>
+        `).join('')}</tbody>
+      </table>
+    </div>
+  `;
+
+  container.innerHTML = `
+    <div class="card">
+      <h2><span class="emoji">1️⃣</span> Matriks Keputusan Awal (X)</h2>
+      <div class="tbl-wrap">
+        <table class="matrix-table">
+          <thead><tr><th>Alt</th>${criteria.map(c=>`<th>${c.code}<br><small>${c.unit}</small></th>`).join('')}</tr></thead>
+          <tbody>${alternatives.map((a,i) => `
+            <tr><td><strong>${a.code}</strong></td>${a.vals.map(v=>`<td>${v}</td>`).join('')}</tr>
+          `).join('')}</tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><span class="emoji">2️⃣</span> Matriks Normalisasi (R)</h2>
+      <div class="step-box">Formula: r<sub>ij</sub> = x<sub>ij</sub> / √(Σx<sub>ij</sub>²)</div>
+      ${matrixHTML(R)}
+    </div>
+
+    <div class="card">
+      <h2><span class="emoji">3️⃣</span> Matriks Ternormalisasi Terbobot (V)</h2>
+      <div class="step-box">Formula: v<sub>ij</sub> = w<sub>j</sub> × r<sub>ij</sub> &nbsp;|&nbsp; Bobot: ${weights.map((w,i)=>`w${i+1}=${w.toFixed(2)}`).join(', ')}</div>
+      ${matrixHTML(V)}
+    </div>
+
+    <div class="card">
+      <h2><span class="emoji">4️⃣</span> Solusi Ideal Positif (A+) dan Negatif (A-)</h2>
+      <div class="tbl-wrap">
+        <table class="matrix-table">
+          <thead><tr><th>Solusi</th>${criteria.map(c=>`<th>${c.code}</th>`).join('')}</tr></thead>
+          <tbody>
+            <tr><td style="color:var(--primary);font-weight:700">A+ (Ideal+)</td>${Apos.map(v=>`<td class="highlight-cell">${fmt(v)}</td>`).join('')}</tr>
+            <tr><td style="color:#c62828;font-weight:700">A- (Ideal-)</td>${Aneg.map(v=>`<td>${fmt(v)}</td>`).join('')}</tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><span class="emoji">5️⃣</span> Jarak & Skor Preferensi (Ci)</h2>
+      <div class="tbl-wrap">
+        <table class="matrix-table">
+          <thead><tr><th>Alternatif</th><th>D+ (Ideal+)</th><th>D- (Ideal-)</th><th>Ci = D- / (D++D-)</th></tr></thead>
+          <tbody>${alternatives.map((a,i) => `
+            <tr>
+              <td><strong>${a.code}</strong></td>
+              <td>${fmt(Dpos[i])}</td>
+              <td>${fmt(Dneg[i])}</td>
+              <td class="highlight-cell">${fmt(C[i])}</td>
+            </tr>
+          `).join('')}</tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function buildResults(ranked) {
+  // Best banner
+  const best = ranked[0];
+  document.getElementById('bestBanner').innerHTML = `
+    <div class="best-banner">
+      <div class="icon">${best.emoji}</div>
+      <div>
+        <h3>🏆 Teknologi Terbaik: ${best.name}</h3>
+        <p>Skor TOPSIS tertinggi: <strong>${best.ci.toFixed(4)}</strong> — Paling mendekati solusi ideal untuk pengeringan stroberi</p>
+      </div>
+    </div>
+  `;
+
+  // Rank cards
+  const maxCi = ranked[0].ci;
+  document.getElementById('rankGrid').innerHTML = ranked.map(a => `
+    <div class="rank-card rank-${a.rank}">
+      <div class="rank-badge">${a.rank}</div>
+      <div class="rank-info">
+        <div class="name">${a.emoji} ${a.name}</div>
+        <div class="desc">${a.desc.substring(0,90)}...</div>
+        <div class="bar-wrap"><div class="bar-fill" style="width:${(a.ci/maxCi*100).toFixed(1)}%"></div></div>
+      </div>
+      <div class="rank-score">
+        <div class="score">${a.ci.toFixed(4)}</div>
+        <div class="label">Skor Ci</div>
+      </div>
+    </div>
+  `).join('');
+
+  // Score table
+  document.getElementById('scoreBody').innerHTML = ranked.map(a => `
+    <tr>
+      <td><strong>#${a.rank}</strong></td>
+      <td style="text-align:left">${a.emoji} ${a.short}</td>
+      <td>${a.dp.toFixed(4)}</td>
+      <td>${a.dn.toFixed(4)}</td>
+      <td style="font-weight:700;color:var(--primary)">${a.ci.toFixed(4)}</td>
+      <td>${a.rank === 1 ? '✅ Direkomendasikan' : a.rank === 2 ? '⭐ Alternatif' : '—'}</td>
+    </tr>
+  `).join('');
+
+  // Conclusion
+  document.getElementById('conclusion').innerHTML = `
+    <div class="step-box">
+      <strong>Hasil Analisis TOPSIS</strong> menunjukkan bahwa <strong>${best.emoji} ${best.name}</strong> 
+      mendapatkan skor preferensi tertinggi (Ci = ${best.ci.toFixed(4)}), menjadikannya teknologi pengering 
+      tenaga surya paling direkomendasikan untuk pengeringan stroberi berdasarkan kombinasi lima kriteria yang dibobot.
+      <br><br>
+      <strong>Urutan Rekomendasi:</strong>
+      <ol style="padding-left:20px;margin-top:8px">
+        ${ranked.map(a => `<li>${a.emoji} ${a.name} — Skor: ${a.ci.toFixed(4)}</li>`).join('')}
+      </ol>
+      <br>
+      <strong>Catatan:</strong> Hasil dapat berubah sesuai penyesuaian bobot kriteria pada tab Kriteria & Bobot, 
+      mencerminkan prioritas masing-masing pengambil keputusan.
+    </div>
+  `;
+}
+
+init();
+</script>
+</body>
+</html>
